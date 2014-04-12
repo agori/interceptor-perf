@@ -1,1 +1,6 @@
 = interceptor-perf
+
+In JEE world sometimes you have to catch some kinf of exceptions, for example @OptimistickLockException@, 
+with the aim of presenting it a meaningful manner to the user (for example, "another user has been faster then you. Retry!").
+
+A JEE interceptor is a perfect 
