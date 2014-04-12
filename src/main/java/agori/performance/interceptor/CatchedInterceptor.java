@@ -9,6 +9,8 @@ import javax.persistence.PersistenceContext;
 @Catched @Interceptor
 public class CatchedInterceptor {
 	
+	public final static boolean USE_CLEAR = true;
+	
 	@PersistenceContext 
 	EntityManager em;
 	
@@ -19,7 +21,9 @@ public class CatchedInterceptor {
 			Object result = invocationContext.proceed();
 			StatsCollector.threadInstance().start();
 			em.flush();
-			em.clear();
+			if (USE_CLEAR) {
+				em.clear();
+			}
 			return result;
 		} catch (Exception e) {
 			return "ERROR";
