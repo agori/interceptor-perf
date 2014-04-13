@@ -17,6 +17,7 @@ Two +em.flush()+ calls consume time and CPU, depending on the number of managed 
 This project gives a proof of this performance penalty and show a very simple technique to undertake the problem. 
 Indeed if you call 
 
+[source,java]
 ----
 em.clear();
 ----
@@ -27,6 +28,7 @@ just after flush, the second automatic flush will perform a complete dirty check
 == Deploy and monitoring
 
 This is a maven project, so
+
 
 ----
 mvn clean package
@@ -48,7 +50,7 @@ curl http://localhost:8080/perf-interceptor/perf/stats
 
 
 By default the project uses the +em.clear()+ trick. To see the difference, open the class +CatchedInterceptor+ and change
-the  value of the +USE_CLEAR + flag. Then run again the above tets. 
+the  value of the +USE_CLEAR+ flag. Then run again the above tests. 
 
 I got these results:
 
@@ -57,7 +59,7 @@ time without clear:  min=9,max=114,average=16
 time with clear:     min=5,max=68, average=9
 ----
 
-These results show that there is a clear gain in performance with the +em.clear()+ trick.
+These results show there is a clear gain in performance using the +em.clear()+ trick.
 
 
 
