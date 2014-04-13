@@ -4,17 +4,17 @@ In JEE world sometimes you have to catch some kind of exceptions, for example +O
 with the aim of presenting it in a meaningful manner to the user 
 (for example, "another user has been faster then you. Retry!").
 
-A JEE interceptor is a perfect place where to catch these exceptions. Anyway a call to +EntityManager.flush()+
-inside the interceptor is required to ensure that none exception will be thrown out of its control. 
+A JEE interceptor is a perfect place to to catch these exceptions. Anyway a call to +EntityManager.flush()+
+inside the interceptor is required to ensure that no exceptions will be thrown out of its control. 
 
 Anyway, this extra flush comes with a performance penalty. A +flush+ call causes a dirty check on every managed entity.
 Keep in mind that flush always happen before commit (at least this is the default behavior), and that an interceptor
 around an EJB (when +@TransactionAttribute(REQUIRES)+ is used) is executed inside the transaction (when CMT is used).
 
-A consequence of these facts is that you have two calls to flush (manual flush + automatic flush). Two +em.flush()+ calls cost time,
-depending on the number of managed entities and probably the entities by themself. 
+A consequence of these facts is that your code is executing two flush operations (manual flush plus automatic flush). 
+Two +em.flush()+ calls consume time and CPU, depending on the number of managed entities and probably the entities by themself. 
 
-This project gives a proof of this performance cost and show a very simple technique to undertake the problem. 
+This project gives a proof of this performance penalty and show a very simple technique to undertake the problem. 
 Indeed if you call 
 
 ----
@@ -22,4 +22,42 @@ em.clear();
 ----
 
 just after flush, the second automatic flush will perform a complete dirty check against...nothing, with gain in performance.
+
+
+== Deploy and monitoring
+
+This is a maven project, so
+
+----
+mvn clean package
+----
+
+will create the WAR that you can deploy on your Application Server (my tests was on JBoss 7).
+
+To gather statistics run following command:
+
+----
+curl -s "http://localhost:8080/perf-interceptor/perf/execute?[1-100]"
+----
+
+To read collected statistics run
+
+----
+curl http://localhost:8080/perf-interceptor/perf/stats
+----
+
+
+By default the project uses the +em.clear()+ trick. To see the difference, open the class +CatchedInterceptor+ and change
+the  value of the +USE_CLEAR + flag. Then run again the above tets. 
+
+I got these results:
+
+----
+time without clear:  min=9,max=114,average=16
+time with clear:     min=5,max=68, average=9
+----
+
+These results show that there is a clear gain in performance with the +em.clear()+ trick.
+
+
 
