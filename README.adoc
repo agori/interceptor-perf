@@ -2,12 +2,10 @@
 
 In JEE world sometimes you have to catch some kind of exceptions, for example +OptimistickLockException+, 
 with the aim of presenting it in a meaningful manner to the user 
-(for example, "another user has been faster then you. Retry!").
-
-A JEE interceptor is a perfect place to to catch these exceptions. Anyway a call to +EntityManager.flush()+
+(for example, "another user has been faster then you. Retry!"). A *JEE interceptor* is a perfect place to to catch these exceptions. Anyway a call to +EntityManager.flush()+
 inside the interceptor is required to ensure that no exceptions will be thrown out of its control. 
 
-Anyway, this extra flush comes with a performance penalty. A +flush+ call causes a dirty check on every managed entity.
+Anyway, this extra flush comes with a *performance penalty*. A +flush+ call causes a dirty check on every managed entity.
 Keep in mind that flush always happen before commit (at least this is the default behavior), and that an interceptor
 around an EJB (when +@TransactionAttribute(REQUIRES)+ is used) is executed inside the transaction (when CMT is used).
 
