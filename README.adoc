@@ -54,10 +54,10 @@ the  value of the +USE_CLEAR+ flag. Then run again the above tests.
 
 I got these results:
 
---
+----
 time without clear:  min=9,max=114,average=16
 time with clear:     min=5,max=68, average=9
---
+----
 
 These results show there is a clear gain in performance using the +em.clear()+ trick.
 
